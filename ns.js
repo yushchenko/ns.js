@@ -23,18 +23,18 @@
             target = target[parts[i]];
         }
 
-        function extend(fn) {
-            fn.apply(target);
-        }
-
-        function add(fn) {
-            target[fn.name] = fn;
-        }
-
-        return {
-            extend: extend,
-            add: add
+        var iface = {
+            extend: function ns_extend(fn) {
+                fn.apply(target);
+                return iface;
+            },
+            add: function ns_add(fn) {
+                target[fn.name] = fn;
+                return iface;
+            }
         };
+
+        return iface;
     };
 
 })( (function(){ return this; })() );

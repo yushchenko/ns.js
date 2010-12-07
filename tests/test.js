@@ -74,6 +74,19 @@ test('ns().add - adding one function (constructor) to namespace', function() {
     ok(obj2.getArgs() === 3, 'method should have access to constructor\'s arguments');
 });
 
+test('ns().add().add() - chaning', function() {
+
+    ns('test.utils').add(function ClassOne(){
+
+    })
+    .add(function ClassTwo() {
+
+    });
+
+    ok(typeof test.utils.ClassOne === 'function', 'ClassOne should be added');
+    ok(typeof test.utils.ClassTwo === 'function', 'ClassTwo should be added');
+});
+
 // test('', function() {
 
 //     ok(true);
