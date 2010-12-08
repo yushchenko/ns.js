@@ -11,19 +11,19 @@ module('ns.js');
 
 var global = (function() { return this; })();
 
-test("namespace creation", function() {
+test("ns() namespace creation", function() {
 
-    ns('xxx.yyy.zzz');
+    ns('ns.test');
 
-	ok(xxx.yyy.zzz, 'should create new namespace');
+	ok(ns.test, 'should create new namespace');
 
-    global.xxx.yyy.zzz.test = true;
-    ns('xxx.yyy.zzz');
+    global.ns.test.value = true;
+    ns('ns.test');
 
-    ok(xxx.yyy.zzz.test === true, 'should preserve existing namespace');
+    ok(ns.test.value === true, 'should preserve existing namespace');
 });
 
-test('ns object interface', function() {
+test('ns() interface', function() {
 
     var n = ns('xxx');
 
@@ -33,58 +33,73 @@ test('ns object interface', function() {
 
 test('ns().extend - adding several functions to namespace', function() {
 
-    ns('xxx.yyy.zzz').extend(function() {
+    ns('ns.test').extend(function() {
 
-        this.aMethod = function aMethod() {
+        this.first = function first() {
             return 'result';
+        };
+
+        this.second = function second() {
+            return 1;
         };
     });
 
-    ok(typeof xxx.yyy.zzz.aMethod === 'function', 'should add method to ns');
-    ok(xxx.yyy.zzz.aMethod() === 'result', 'the method should return proper result');
+    ok(typeof ns.test.first === 'function'
+       && typeof ns.test.second === 'function', 'should add functions to namespace');
+    ok(ns.test.first() === 'result'
+       && ns.test.second() === 1, 'the functions should return proper result');
 });
 
-test('ns().add - adding one function (constructor) to namespace', function() {
+test('ns().extend - adding constructor to namespace', function() {
 
-    ns('test.utils').add(function MyConstructor(arg1, arg2) {
+    ns('ns.test').extend(function () {
 
-        var pub = MyConstructor.prototype, //TODO: avoid ctor name duplication
-            secret = 'secret'; // private data
+        var ctor,
+            secret = 'secret',  // private data
+            arg1, arg2, // constructor arguments
+            pub; // refrence to public property
 
-        function a1() { // private method
+        this.MyClass = ctor = function () {
+            arg1 = arguments[0]; // saving ctor args to private fields
+            arg2 = arguments[1];
+            this.pub = 'pub'; // public data, accessible only in public methods using this
+        };
+
+        function getArg1() { // private method
             return arg1;
         }
 
-        pub.getSecret = function getSecret() { // public instance method
+        ctor.prototype.getSecret = function getSecret() { // public instance method
             return secret;
         };
 
-        pub.getArgs = function getArgs() { // public instance method
-            return a1() + arg2;
+        ctor.prototype.getArgs = function getArgs() { 
+            return getArg1() + arg2;
         };
     });
 
-    ok(typeof test.utils.MyConstructor === 'function', 'should add function to namespace using its name');
+    ok(typeof ns.test.MyClass === 'function', 'should add ctor to namespace');
 
-    var obj = new test.utils.MyConstructor();
+    var obj = new ns.test.MyClass();
     ok(typeof obj.getSecret === 'function', 'created object should have method `getSecret`');
     ok(obj.getSecret() === 'secret', 'the method should return secret');
+    ok(obj.pub === 'pub', 'public object should have public property');
 
-    var obj2 = new test.utils.MyConstructor(1, 2);
+    var obj2 = new ns.test.MyClass(1, 2);
     ok(obj2.getArgs() === 3, 'method should have access to constructor\'s arguments');
 });
 
 test('ns().add().add() - chaning', function() {
 
-    ns('test.utils').add(function ClassOne(){
+    ns('ns.test').add(function first(){
 
     })
-    .add(function ClassTwo() {
+    .add(function second() {
 
     });
 
-    ok(typeof test.utils.ClassOne === 'function', 'ClassOne should be added');
-    ok(typeof test.utils.ClassTwo === 'function', 'ClassTwo should be added');
+    ok(typeof ns.test.first === 'function', 'first function should be added by name');
+    ok(typeof ns.test.second === 'function', 'second function should be added by name');
 });
 
 // test('', function() {
