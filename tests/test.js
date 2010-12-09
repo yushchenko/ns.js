@@ -1,6 +1,6 @@
 /*
  * ns.js - JavaScript Namespacing
- * http://github.com/yushchenko/ns
+ * http://github.com/yushchenko/ns.js
  *
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -11,7 +11,7 @@ module('ns.js');
 
 var global = (function() { return this; })();
 
-test("ns() namespace creation", function() {
+test("namespace creation", function() {
 
     ns('ns.test');
 
@@ -23,14 +23,14 @@ test("ns() namespace creation", function() {
     ok(ns.test.value === true, 'should preserve existing namespace');
 });
 
-test('ns() interface', function() {
+test('interface', function() {
 
     var n = ns('xxx');
 
     ok(typeof n.extend === 'function', 'should have `extend` method');
 });
 
-test('ns().extend - adding several functions to namespace', function() {
+test('extend - adding several functions to namespace', function() {
 
     ns('ns.test').extend(function() {
 
@@ -49,20 +49,17 @@ test('ns().extend - adding several functions to namespace', function() {
        && ns.test.second() === 1, 'the functions should return proper result');
 });
 
-test('ns().extend - adding constructor to namespace', function() {
+test('extend - adding object constructor to namespace', function() {
 
     ns('ns.test').extend(function () {
 
-        var ctor,
+        var ctor = this.MyClass = function (a1, a2) {
+                arg1 = a1; // saving ctor args to private fields
+                arg2 = a2; // public data, accessible only in public methods using this
+                this.pub = 'pub';
+            },
             secret = 'secret',  // private data
-            arg1, arg2, // constructor arguments
-            pub; // refrence to public property
-
-        this.MyClass = ctor = function () {
-            arg1 = arguments[0]; // saving ctor args to private fields
-            arg2 = arguments[1];
-            this.pub = 'pub'; // public data, accessible only in public methods using this
-        };
+            arg1, arg2; // constructor arguments
 
         function getArg1() { // private method
             return arg1;
@@ -86,6 +83,17 @@ test('ns().extend - adding constructor to namespace', function() {
 
     var obj2 = new ns.test.MyClass(1, 2);
     ok(obj2.getArgs() === 3, 'method should have access to constructor\'s arguments');
+});
+
+test('use - getting reference to namespace', function() {
+    ns('ns.test').extend(function() {
+        this.constant = 'constant';
+    });
+
+    var ref = ns('ns.test').use();
+
+    ok(ref === ns.test, 'should refer given namespace');
+    ok(ref.constant === 'constant', 'should refer given namespace');
 });
 
 test('article example', function() {

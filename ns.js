@@ -1,6 +1,6 @@
 /*
  * ns.js - JavaScript Namespacing
- * http://github.com/yushchenko/ns
+ * http://github.com/yushchenko/ns.js
  *
  * Copyright 2010, Valery Yushchenko (http://www.yushchenko.name)
  * Dual licensed under the MIT or GPL Version 2 licenses.
@@ -26,7 +26,9 @@
         var iface = {
             extend: function ns_extend(fn) {
                 fn.apply(target);
-                return iface;
+            },
+            use: function ns_use() {
+                return target;
             }
         };
 
