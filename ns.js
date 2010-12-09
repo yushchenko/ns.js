@@ -27,10 +27,6 @@
             extend: function ns_extend(fn) {
                 fn.apply(target);
                 return iface;
-            },
-            add: function ns_add(fn) {
-                target[fn.name] = fn;
-                return iface;
             }
         };
 

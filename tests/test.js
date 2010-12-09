@@ -28,7 +28,6 @@ test('ns() interface', function() {
     var n = ns('xxx');
 
     ok(typeof n.extend === 'function', 'should have `extend` method');
-    ok(typeof n.add === 'function', 'should have `add` method');
 });
 
 test('ns().extend - adding several functions to namespace', function() {
@@ -89,21 +88,23 @@ test('ns().extend - adding constructor to namespace', function() {
     ok(obj2.getArgs() === 3, 'method should have access to constructor\'s arguments');
 });
 
-test('ns().add().add() - chaning', function() {
+test('article example', function() {
 
-    ns('ns.test').add(function first(){
+    ns('ns.test').extend(function () {
 
-    })
-    .add(function second() {
+        var ctor = this.MyClass = function() {
+            },
+            secret = 'secret';  // private data
 
+        ctor.prototype.getSecret = function getSecret() { // public method
+            return secret;
+        };
     });
 
-    ok(typeof ns.test.first === 'function', 'first function should be added by name');
-    ok(typeof ns.test.second === 'function', 'second function should be added by name');
+    var obj = new ns.test.MyClass();
+    
+    ok(obj instanceof ns.test.MyClass, 'should be instance of MyClass');
+    ok(typeof obj.getSecret === 'function', 'should have getSecret method');
+    ok(obj.getSecret() === 'secret', 'should return secret');
 });
-
-// test('', function() {
-
-//     ok(true);
-// });
 
