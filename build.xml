@@ -1,0 +1,17 @@
+<project name="ns.js" default="test" basedir=".">
+
+  <target name="lint">
+    <echo message="Checking with JSLint..." />
+	<exec executable="java" failonerror="true">
+	  <arg line="-jar build/js.jar build/jslint-check.js" />
+	</exec>
+  </target>
+
+  <target name="test" depends="lint"> 
+    <echo message="Running unit tests..." />
+    <exec executable="java" failonerror="true">
+      <arg line="-jar build/JsTestDriver-1.2.2.jar --config build/JsTestDriver.yaml --tests all" />
+    </exec>
+  </target>
+
+</project>
