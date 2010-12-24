@@ -1,17 +1,21 @@
-<project name="ns.js" default="test" basedir=".">
+<project name="ns.js" default="tests" basedir=".">
 
-  <target name="lint">
-    <echo message="Checking with JSLint..." />
+  <target name="jslint">
 	<exec executable="java" failonerror="true">
-	  <arg line="-jar build/js.jar build/jslint-check.js" />
+	  <arg line="-jar build/libs/js.jar build/jslint-runner.js" />
 	</exec>
   </target>
 
-  <target name="test" depends="lint"> 
-    <echo message="Running unit tests..." />
+  <target name="tests" depends="jslint"> 
     <exec executable="java" failonerror="true">
-      <arg line="-jar build/JsTestDriver-1.2.2.jar --config build/JsTestDriver.yaml --tests all" />
+      <arg line="-jar tests/libs/JsTestDriver-1.2.2.jar --config tests/tests.yaml --tests all" />
     </exec>
+  </target>
+
+  <target name="combine" depends="tests">
+  </target>
+
+  <target name="crunch" depends="combine">
   </target>
 
 </project>

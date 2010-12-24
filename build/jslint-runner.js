@@ -1,7 +1,7 @@
-load("build/jslint.js");
+load("build/libs/jslint.js");
 
- check('src/ns.js')
-.check('tests/ns.tests.js')
+ check('source/ns.js')
+.check('tests/source/ns.tests.js')
 .report();
 
 
