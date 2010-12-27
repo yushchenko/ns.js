@@ -54,23 +54,18 @@ describe('ns.js', function() {
         ns('ns.test4').extend(function () {
     
             var ctor = this.MyClass = function (a1, a2) {
-                    arg1 = a1; // saving ctor args to private fields
-                    arg2 = a2; // public data, accessible only in public methods using this
+                    this.arg1 = a1;
+                    this.arg2 = a2;
                     this.pub = 'pub';
                 },
-                secret = 'secret',  // private data
-                arg1, arg2; // constructor arguments
-    
-            function getArg1() { // private method
-                return arg1;
-            }
-    
+                secret = 'secret';  // private namespace data, common for all instances
+
             ctor.prototype.getSecret = function getSecret() { // public instance method
                 return secret;
             };
     
             ctor.prototype.getArgs = function getArgs() { 
-                return getArg1() + arg2;
+                return this.arg1 + this.arg2;
             };
         });
 
@@ -105,7 +100,7 @@ describe('ns.js', function() {
     
             var ctor = this.MyClass = function() {
                 },
-                secret = 'secret';  // private data
+                secret = 'secret';  // private namespace data, common for all instances
     
             ctor.prototype.getSecret = function getSecret() { // public method
                 return secret;
